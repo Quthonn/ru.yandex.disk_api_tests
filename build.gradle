@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+    id 'io.qameta.allure' version '2.12.0'
+    id 'io.freefair.lombok' version '6.0.0-m2'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+allure {
+    version.set("2.30.0")
+    adapter {
+        // Configure version for io.qameta.allure:allure-* adapters
+        // It defaults to allure.version
+        allureJavaVersion.set("2.28.0")
+        aspectjVersion.set("1.9.22.1")
+
+        // Customize environment variables for launching Allure
+//        environment.put("JAVA_HOME", "/path/to/java_home")
+
+        autoconfigure.set(true)
+        autoconfigureListeners.set(true)
+        aspectjWeaver.set(true)
+
+        // By default, categories.json is detected in src/test/resources/../categories.json,
+        // However, it would be better to put the file in a well-known location and configure it explicitly
+//        categoriesFile.set(layout.projectDirectory.file("config/allure/categories.json"))
+        frameworks {
+            junit5 {
+                // Defaults to allureJavaVersion
+//                adapterVersion.set("2.19")
+                enabled.set(true)
+                // Enables allure-junit4 default test listeners via META-INF/services/...
+                autoconfigureListeners.set(true)
+            }
+            junit4 {
+                // same as junit5
+            }
+            testng {
+                // same as junit5
+            }
+            spock
+            cucumberJvm
+            // Alternative syntax: cucumberJvm(2) {...}
+            cucumber2Jvm
+            cucumber3Jvm
+            cucumber4Jvm
+            cucumber5Jvm
+            cucumber6Jvm
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'com.codeborne:selenide:6.19.1'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.6'
+    testImplementation 'io.qameta.allure:allure-selenide:2.28.0'
+    testImplementation 'io.qameta.allure:allure-junit5:2.28.0'
+    testImplementation 'io.rest-assured:rest-assured:5.4.0'
+    implementation 'io.github.cdimascio:dotenv-java:3.0.0'
+    testImplementation 'io.github.cdimascio:dotenv-java:2.2.0'
+    testImplementation 'io.qameta.allure:allure-rest-assured:2.28.0'
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.18.3'
+
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperties(System.getProperties())
+}
